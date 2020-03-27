@@ -11,5 +11,10 @@
 ## Backlog
 * [ ] add other products
 * [ ] New icons depending on how much product is available
-it works!
+
+## Deligated task
+* [ ] Front-End
+* [ ] Back-End
+* [ ] db Design
+* [ ] API integration
 
