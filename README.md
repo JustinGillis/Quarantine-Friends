@@ -18,3 +18,8 @@
 * [ ] db Design
 * [ ] API integration
 
+## TODO for weekend of 3/27
+* [ ] deligate workload
+* [ ] Wireframe
+* [ ] create user database
+* [ ] login and registration
