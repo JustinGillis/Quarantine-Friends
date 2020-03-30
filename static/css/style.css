@@ -1,0 +1,16 @@
+img{
+    height: 640px;
+}
+body{
+    background-color: black;
+}
+.jumbotron{
+    background-color: black;
+    color: white;
+    text-align: center;
+}
+span{
+    color: gold;
+    font-style: italic;
+    font-weight: bold;
+}
