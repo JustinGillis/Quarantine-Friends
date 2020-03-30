@@ -11,15 +11,22 @@
 ## Backlog
 * [ ] add other products
 * [ ] New icons depending on how much product is available
-
+* [ ] Modularize
 ## Deligated task
-* [ ] Front-End
-* [ ] Back-End
-* [ ] db Design
-* [ ] API integration
+* [x] Front-End - Brian/Tomas 
+* [x] Back-End - Justin/Tomas
+* [x] db Design - Justin
+* [x] API integration - Team
 
 ## TODO for weekend of 3/27
-* [ ] deligate workload
+* [x] deligate workload
 * [x] Wireframe
 * [x] create user database
 * [x] login and registration
+
+## TODO for 3/30 - 4/1
+* [ ] edit user page
+* [ ] add additional dbs
+* [ ] more routes 
+* [ ] finish most front-end
+* [ ] Edit validations
