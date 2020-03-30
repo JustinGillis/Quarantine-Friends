@@ -20,6 +20,6 @@
 
 ## TODO for weekend of 3/27
 * [ ] deligate workload
-* [ ] Wireframe
-* [ ] create user database
-* [ ] login and registration
+* [x] Wireframe
+* [x] create user database
+* [x] login and registration
