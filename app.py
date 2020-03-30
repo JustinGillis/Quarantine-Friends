@@ -43,23 +43,23 @@ def on_register():
         db.session.commit()
         user = User.query.filter_by(email=request.form['email']).first()
         session['userid'] = user.id
-        return redirect('/') # change to correct page
+        return render_template('home.html', user = user)
     else:
-        return redirect('/') # change to correct page
+        return redirect('/')
 
 @app.route('/on_login', methods=['post'])
 def on_login():
     user = User.query.filter_by(email=request.form['email']).first()
     if user == None:
-        return redirect('/') # change to correct page
+        return redirect('/')
     elif bcrypt.check_password_hash(user.password, request.form['password']):
         session['userid'] = user.id
-        return redirect('/') # change to correct page
+        return render_template('home.html',user=user)
 
 @app.route('/on_logout')
 def logout():
     session.clear()
-    return redirect('/') # change to correct page
+    return redirect('/')
 
 if __name__ == '__main__':
     app.run(debug=True)

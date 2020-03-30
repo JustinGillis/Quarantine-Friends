@@ -1,0 +1,32 @@
+.btn{
+    color: black;
+    font-weight: bold;
+    border-radius: 5px;
+    border: solid black 1px;
+    margin-left: 15px;
+}
+nav{
+    color: black;
+    font-weight: bold;
+}
+body{
+    background-color: black;
+}
+.row{
+    color: white;
+    
+}
+a{
+    margin-bottom: 54px;
+}
+.card{
+    background-color: rgba(255, 208, 0, 0.925);
+}
+.jumbotron{
+    background-color: black;
+    color: white;
+    text-align: center;
+}
+hr{
+    border: white 2px solid;
+}
