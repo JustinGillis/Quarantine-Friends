@@ -1,0 +1,20 @@
+body{
+    background-color:rgba(248, 196, 51, 0.979);
+}
+.container{
+    background-color: black;
+    height: 975px;
+}
+form{
+    color: white;
+}
+.btn{
+    color: black;
+    font-weight: bold;
+    border-radius: 5px;
+    border: solid black 1px;
+    margin-left: 15px;
+}
+span{
+    font-weight: bold;
+}
