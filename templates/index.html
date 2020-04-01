@@ -10,6 +10,8 @@
     <title>Quarantine Friends</title>
 </head>
 <body>
+    
+
 <!-- nav bar -->
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color:gold">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
@@ -24,13 +26,32 @@
                     <a class="btn btn-success dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-user-plus"></i> Sign Up
-
                     </a>
-                    <form action="/on_signup" method="post" style="width: 300px;" class="dropdown-menu p-4">
+                    <form action="/on_signup" method="post" style="width: 300px;" class="needs-validation dropdown-menu p-4" novalidate>
+
+                    <!-- Flash messages -->
+                    {% with signup = get_flashed_messages(category_filter=["signup"]) %}
+                    {% if signup %}
+                    <div class="alert-message block-message error">
+                    <ul>
+                        {%- for msg in signup %}
+                        <li>{{ msg }}</li>
+                        {% endfor -%}
+                    </ul>
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+
                         <div class="form-group">
-                            <label for="first_name">First Name</label>
-                            <input type="text" class="form-control" name="first_name" id="first_name"
-                                placeholder="First Name">
+                            <label for="validationCustom01">First Name</label>
+                            <input type="text" class="form-control" name="first_name" id="validationCustom01"
+                                placeholder="First Name" required>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                You must enter your first name
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="last_name">Last Name</label>
@@ -45,7 +66,10 @@
                         <div class="form-group">
                             <label for="password">Password</label>
                             <input type="password" class="form-control" name="password" id="password"
-                                placeholder="Password">
+                                placeholder="Password" aria-describedby='passwordHelp'>
+                            <small id="passwordHelp" class="form-text text-muted">
+                                (Your password must be at least 6 characters)
+                            </small>
                         </div>
                         <div class="form-group">
                             <label for="confirm_password">Confirm Password</label>
@@ -61,9 +85,9 @@
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-sign-in-alt"></i> Sign In
                     </a>
-                    <form action="/on_login" method="post" style="width: 300px;" class="dropdown-menu p-4">
+                    <form action="/on_login" method="post" style="width: 300px;" class="needs-validation dropdown-menu p-4">
                         <div class="form-group">
-                            <label for="email">Email</label>
+                            <label for="">Email</label>
                             <input type="email" class="form-control" name="email" id="email"
                                 placeholder="Email">
                         </div>
@@ -81,6 +105,28 @@
             </div>
         </div>
     </nav>
+
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
           <h1 class="display-4">Welcome to <span>Quarantine</span> Friends</h1>
