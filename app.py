@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, session, url_for
+from flask import Flask, render_template, redirect, request, session, url_for, flash
 import re
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
@@ -26,6 +26,14 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, server_default=func.now())
     updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
 
+class Item(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String(255))
+    lat = db.Column(db.String(255))
+    lng = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime, server_default=func.now())
+    updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -34,7 +42,22 @@ def index():
 def on_register():
     is_valid = True
 
-    # add validations
+    # validations
+    if len(request.form['first_name']) < 3:
+        is_valid = False
+        flash('First name is too short', 'signup')
+    if len(request.form['last_name']) < 3:
+        is_valid = False
+        flash('Last name is too short', 'signup')
+    if not EMAIL_REGEX.match(request.form['email']):
+        is_valid = False
+        flash("Invalid email address", 'signup')
+    if len(request.form['password']) < 6:
+        is_valid = False
+        flash('Password must be at least 6 characters', 'signup')
+    if request.form['password'] != request.form['confirm_password']:
+        is_valid = False
+        flash('Passwords do not match', 'signup')
 
     if is_valid:
         pw_hash = bcrypt.generate_password_hash(request.form['password'])
@@ -51,15 +74,41 @@ def on_register():
 def on_login():
     user = User.query.filter_by(email=request.form['email']).first()
     if user == None:
+        flash('Could not log in', 'login')
         return redirect('/')
     elif bcrypt.check_password_hash(user.password, request.form['password']):
         session['userid'] = user.id
-        return render_template('home.html',user=user)
+        return render_template('home.html',user = user)
 
 @app.route('/on_logout')
 def logout():
     session.clear()
     return redirect('/')
+
+# test routes start
+@app.route('/test')
+def test():
+    items = Item.query.all()
+
+    items_table = []
+    for item in items:
+        items_table.append(item)
+
+    print(items_table)
+
+    if items:
+        return render_template('test.html', items=items)
+    else:
+        return render_template('test.html')
+
+@app.route('/on_test', methods=['POST'])
+def ontest():
+    print(request.form)
+    new_item = Item(category=request.form['category'], lat=request.form['lat'], lng=request.form['lng'])
+    db.session.add(new_item)
+    db.session.commit()
+    return redirect('/test')
+# test routes end
 
 if __name__ == '__main__':
     app.run(debug=True)
