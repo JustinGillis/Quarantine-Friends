@@ -3,7 +3,8 @@ import re
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 from flask_migrate import Migrate
-from flask_bcrypt import Bcrypt 
+from flask_bcrypt import Bcrypt
+from flask import json
 
 app = Flask(__name__)
 
@@ -25,7 +26,6 @@ class User(db.Model):
     password = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, server_default=func.now())
     updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
-
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(255))
@@ -89,15 +89,26 @@ def logout():
 @app.route('/test')
 def test():
     items = Item.query.all()
-
-    items_table = []
-    for item in items:
-        items_table.append(item)
-
-    print(items_table)
+    markers = []
 
     if items:
-        return render_template('test.html', items=items)
+        
+        markers = []
+        for item in items:
+            temp = {}
+            coords = {
+                'lat' : float(item.lat),
+                'lng' : float(item.lng)
+            }
+            temp.update({
+                'coords' : coords,
+                'iconImage' : 'https://i.ibb.co/Zx24VKX/toilet-Paper.png'
+            })
+            markers.append(temp)
+            
+        print('markers:', markers)
+
+        return render_template('test.html', markers=markers)
     else:
         return render_template('test.html')
 
