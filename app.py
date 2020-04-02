@@ -78,29 +78,7 @@ def on_login():
         return redirect('/')
     elif bcrypt.check_password_hash(user.password, request.form['password']):
         session['userid'] = user.id
-<<<<<<< HEAD
-        return redirect('/dashboard')
-
-@app.route('/dashboard') #had to add a 'dashboard route' after login/signup because there was no way to come back to main page after you left main page after login.- Brian
-def dashboard(): 
-    results = User.query.all()
-    return render_template('home.html', user=results[0])
-
-@app.route('/map')
-def map():
-    return render_template('map.html')
-
-@app.route('/edit') #added 'Edit' path, but needs '<user_id>' not sure how to add that with sqlite - Brian
-def edit():
-    return render_template('edit.html')
-
-#@app.route('on_edit', methods=['post']) - Brian
-# def on_edit():
-# needs sqlite for 'INSERT INTO'
-#     return redirect("/dashboard")
-=======
         return render_template('home.html',user = user)
->>>>>>> 1016755cd0c6ed24990d85cbfa836f648badb4a7
 
 @app.route('/on_logout')
 def logout():
