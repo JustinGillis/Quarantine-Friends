@@ -4,18 +4,52 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css') }}">
+  <script src="https://kit.fontawesome.com/ab10a33f6d.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/map.css') }}">
   <title>My Google Map</title>
-  <style>
-    #map{
-      height:1080px;
-      width:100%;
-    }
-    img{
-      width:15px;   
-    }
-  </style>
 </head>
 <body>
+  <nav class="navbar navbar-expand-lg navbar-warning bg-warning">
+    <span class="navbar-text">
+        Map
+      </span>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+        </li>
+        <li class="nav-item">
+            <a href="/dashboard"><button type="button" class="btn btn-success">Dashboard</button></a>
+        </li>
+        <li class="nav-item">
+            <a href="/on_logout"><button type="button" class="btn btn-success">Logout</button></a>
+        </li>
+      </ul>
+      <span class="navbar-text">
+        Quarantine Friends
+      </span>
+    </div>
+  </nav>
+  <div>
+    <form>
+      <div class="form-group">
+          <label for="comments"><h2>Ask Away!</h2></label>
+          <textarea class="form-control" name="comments" rows="4" cols="30"></textarea>
+      </div>
+    <input type="submit" class="btn btn-success" value="Post">
+  </form>
+  </div>
+  <hr>
+  <div>
+  <h4> Brian Says: This is where the comments will go after posted? for now until we figure out the google places API to add comments to Pins </h4>
+  <h4>Brian Says: need to add scroll bar as well for now, this are all hardcoded messages i wrote myself lol need a comments db</h4>
+</div>
+<hr>
   <div id="map"></div>
   
   <script>
