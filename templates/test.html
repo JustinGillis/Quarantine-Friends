@@ -9,6 +9,7 @@
   <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css') }}">
   <script src="https://kit.fontawesome.com/ab10a33f6d.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/map.css') }}">
+
   <title>My Google Map</title>
 </head>
 <body>
@@ -51,15 +52,17 @@
 </div>
 <hr>
   <div id="map"></div>
+
   
   <script>
+
     function initMap(){
       // Map options
       var options = {
         zoom:15,
         center:{lat:42.3601,lng:-71.0589}
       }
-
+      
       // New map
       var map = new google.maps.Map(document.getElementById('map'), options);
 
@@ -87,30 +90,32 @@
 
       // Listen for click on map
       google.maps.event.addListener(map, 'click', function(event){
+        
+        
         // Add marker
         addNewMarker({coords:event.latLng});
       });
-
+    
       
-
+      var markers = {{ markers | tojson }}
       // Array of existing markers
-      var markers = [
-        {
-          coords:{lat:42.4668,lng:-70.9495},
-          iconImage:'http://www.simpleimageresizer.com/_uploads/photos/ff2568aa/NicePng_toilet-png_208712_3_20x20.png',
-          // content:'<h1>Lynn MA</h1>'
-        },
-        {
-          coords:{lat:42.8584,lng:-70.9300},
-          iconImage:'http://www.simpleimageresizer.com/_uploads/photos/ff2568aa/NicePng_toilet-png_208712_3_20x20.png',
-          // content:''
+      // var markers = [
+      //   {
+      //     coords:{lat:42.4668,lng:-70.9495},
+      //     iconImage:'http://www.simpleimageresizer.com/_uploads/photos/ff2568aa/NicePng_toilet-png_208712_3_20x20.png',
+      //     // content:'<h1>Lynn MA</h1>'
+      //   },
+      //   {
+      //     coords:{lat:42.8584,lng:-70.9300},
+      //     iconImage:'http://www.simpleimageresizer.com/_uploads/photos/ff2568aa/NicePng_toilet-png_208712_3_20x20.png',
+      //     // content:''
 
-        },
-        {
-          coords:{lat:42.7762,lng:-71.0773},
-          iconImage:'http://www.simpleimageresizer.com/_uploads/photos/ff2568aa/NicePng_toilet-png_208712_3_20x20.png'
-        }
-      ];
+      //   },
+      //   {
+      //     coords:{lat:42.7762,lng:-71.0773},
+      //     iconImage:'http://www.simpleimageresizer.com/_uploads/photos/ff2568aa/NicePng_toilet-png_208712_3_20x20.png'
+      //   }
+      // ];
 
       // Loop through markers
       for(var i = 0;i < markers.length;i++){
@@ -168,6 +173,16 @@
   </script>
   <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAygbJgHbRE5cYKrA6y5nk2SAPiObzGT-4&callback=initMap">
+    </script>
+    <!-- boostrap stuff -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
     </script>
 </body>
 </html>
