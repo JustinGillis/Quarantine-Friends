@@ -31,6 +31,15 @@ class Item(db.Model):
     category = db.Column(db.String(255))
     lat = db.Column(db.String(255))
     lng = db.Column(db.String(255))
+    votes = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, server_default=func.now())
+    updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(255))
+    author_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="cascade"), nullable=False)
+    author = db.relationship('User', foreign_keys=[author_id], backref="user_comments")
+    item_id = db.Column(db.Integer, db.ForeignKey("item.id", ondelete="cascade"), nullable=False)
     created_at = db.Column(db.DateTime, server_default=func.now())
     updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
 
@@ -97,6 +106,52 @@ def edit():
 # def on_edit():
 # needs sqlite for 'INSERT INTO'
 #     return redirect("/dashboard")
+
+
+
+
+# start of routes under construction
+# notes (temporary):
+
+@app.route('/on_upvote/<id>')
+def on_like(id):
+    existing_project = Project.query.get(id)
+    existing_user = User.query.get(session['userid'])
+    existing_user.projects_this_user_likes.append(existing_project)
+    db.session.commit()
+    existing_project.num_likes +=1
+    db.session.commit()
+    print('on like complete')
+    return redirect('/')
+
+@app.route('/on_downvote/<id>')
+def on_unlike(id):
+    existing_project = Project.query.get(id)
+    existing_user = User.query.get(session['userid'])
+    existing_user.projects_this_user_likes.remove(existing_project)
+    db.session.commit()
+    existing_project.num_likes -=1
+    db.session.commit()
+    return redirect('/')
+
+@app.route('/on_comment/<id>', methods=['POST'])
+def on_comment(id):
+    comment = Comment(content=request.form['content'], author_id=session['userid'], project_id=id)
+    db.session.add(comment)
+    db.session.commit()
+    return redirect('/view_project/' + id)
+
+@app.route('/on_delete_comment/<project>/<id>')
+def on_delete_comment(project, id):
+    existing_user = User.query.get(session['userid'])
+    comment = Comment.query.get(id)
+    existing_user.user_comments.remove(comment)
+    db.session.commit()
+    return redirect('/view_project/' + project)
+# end of routes under construction
+
+
+
 
 
 @app.route('/on_logout')
