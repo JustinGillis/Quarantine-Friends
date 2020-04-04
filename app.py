@@ -42,6 +42,13 @@ class Comment(db.Model):
     item_id = db.Column(db.Integer, db.ForeignKey("item.id", ondelete="cascade"), nullable=False)
     created_at = db.Column(db.DateTime, server_default=func.now())
     updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
+class Feedback(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(255))
+    authors_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="cascade"), nullable=False)
+    authors = db.relationship('User', foreign_keys=[authors_id], backref="user_feedback")
+    created_at = db.Column(db.DateTime, server_default=func.now())
+    updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
 
 @app.route('/')
 def index():
@@ -96,7 +103,7 @@ def dashboard():
 
 
 
-@app.route('/edit') #added 'Edit' path, but needs '<user_id>' not sure how to add that with sqlite - Brian
+@app.route('/edit')
 def edit():
     results = User.query.get(session['userid'])
     return render_template('edit.html', user = results)
@@ -112,7 +119,7 @@ def on_edit():
         db.session.commit()
         return redirect('/dashboard')
     else:
-        return redirect('edit')
+        return redirect('/edit')
 
 
 
@@ -203,5 +210,27 @@ def ontest():
     return redirect('/test')
 # test routes end
 
+
+
+
+
+
+# Feedback table under contruction
+@app.route('/feedback')
+def feedback_page():
+    all_feedback = Feedback.query.all()
+    return render_template('feedback.html', feedback = all_feedback)
+
+@app.route('/on_feedback', methods=['post'])
+def on_feedback():
+    new_feedback = Feedback(content=request.form['feedback'], authors_id=session['userid'])
+    if new_feedback:
+        db.session.add(new_feedback)
+        db.session.commit()
+        return redirect('/feedback')
+    else:
+        return redirect('/feedback')
+
+#end feedback table
 if __name__ == '__main__':
     app.run(debug=True)
