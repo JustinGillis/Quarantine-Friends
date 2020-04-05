@@ -4,3 +4,4 @@ venv/
 migrations/
 *.db
 __pycache__/
+

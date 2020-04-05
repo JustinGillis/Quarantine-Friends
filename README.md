@@ -12,6 +12,7 @@
 * [ ] add other products
 * [ ] New icons depending on how much product is available
 * [ ] Modularize
+
 ## Deligated task
 * [x] Front-End - Brian/Tomas 
 * [x] Back-End - Justin/Tomas
