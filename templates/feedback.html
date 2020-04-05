@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="/on_feedback" method="POST">
+        <div class="form-group">
+            <label for="comments"><h2>Ask Away!</h2></label>
+            <textarea class="form-control" name="feedback" rows="4" cols="30"></textarea>
+        </div>
+      <input type="submit" class="btn btn-success" value="Post">
+    </form>
+    <hr>
+    <div>
+    <h4>{{feedback['content']}} {{feedback['first_name']}}</h4>
+    <h4> Brian Says: This is where the comments will go after posted? for now until we figure out the google places API to add comments to Pins </h4>
+    <h4>Brian Says: need to add scroll bar as well for now, this are all hardcoded messages i wrote myself lol need a comments db</h4>
+   
+  </div>
+  <hr>
+</body>
+</html>
