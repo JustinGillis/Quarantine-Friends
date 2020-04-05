@@ -111,28 +111,22 @@ def edit():
 
 
 # start of routes under construction
-# notes (temporary):
 
 @app.route('/on_upvote/<id>')
-def on_like(id):
-    existing_project = Project.query.get(id)
-    existing_user = User.query.get(session['userid'])
-    existing_user.projects_this_user_likes.append(existing_project)
+def on_upvote(id):
+    item = Item.query.filter_by(id=id).first()
+    item.votes +=1
     db.session.commit()
-    existing_project.num_likes +=1
-    db.session.commit()
-    print('on like complete')
-    return redirect('/')
+    print('upvote complete')
+    return redirect('/test')
 
 @app.route('/on_downvote/<id>')
 def on_unlike(id):
-    existing_project = Project.query.get(id)
-    existing_user = User.query.get(session['userid'])
-    existing_user.projects_this_user_likes.remove(existing_project)
+    item = Item.query.filter_by(id=id).first()
+    item.votes -=1
     db.session.commit()
-    existing_project.num_likes -=1
-    db.session.commit()
-    return redirect('/')
+    print('downvote complete')
+    return redirect('/test')
 
 @app.route('/on_comment/<id>', methods=['POST'])
 def on_comment(id):
@@ -148,6 +142,7 @@ def on_delete_comment(project, id):
     existing_user.user_comments.remove(comment)
     db.session.commit()
     return redirect('/view_project/' + project)
+
 # end of routes under construction
 
 
@@ -159,32 +154,27 @@ def logout():
     session.clear()
     return redirect('/')
 
-# test routes start
 @app.route('/test')
 def test():
     items = Item.query.all()
     markers = []
-
     if items:
-        
         markers = []
         for item in items:
-            temp = {}
-            coords = {
-                'lat' : float(item.lat),
-                'lng' : float(item.lng)
-            }
-            temp.update({
-                'coords' : coords,
-                'iconImage' : 'https://i.ibb.co/Zx24VKX/toilet-Paper.png'
-            })
-            markers.append(temp)
-            
-        print('markers:', markers)
-
-        return render_template('test.html', markers=markers)
-    else:
-        return render_template('test.html')
+            if item.votes >= 0:
+                temp = {}
+                coords = {
+                    'lat' : float(item.lat),
+                    'lng' : float(item.lng)
+                }
+                temp.update({
+                    'coords' : coords,
+                    'iconImage' : 'https://i.ibb.co/Zx24VKX/toilet-Paper.png',
+                    'content' : '<p>Votes: %s</p><a href="on_upvote/%s">Upvote</a> <a href="on_downvote/%s">Downvote</a>' % (item.votes, item.id, item.id)
+                })
+                markers.append(temp)
+    print('markers:', markers)
+    return render_template('test.html', markers=markers)
 
 @app.route('/on_test', methods=['POST'])
 def ontest():
@@ -193,7 +183,6 @@ def ontest():
     db.session.add(new_item)
     db.session.commit()
     return redirect('/test')
-# test routes end
 
 if __name__ == '__main__':
     app.run(debug=True)

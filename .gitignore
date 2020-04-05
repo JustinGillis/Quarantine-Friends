@@ -3,3 +3,4 @@ venv/
 .vscode/
 migrations/
 *.db
+__pycache__/
