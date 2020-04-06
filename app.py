@@ -199,27 +199,22 @@ def ontest():
     db.session.commit()
     return redirect('/test')
 
-
-
-
-
-
-# Feedback table under contruction
+#feedback routes
 @app.route('/feedback')
 def feedback_page():
-    all_feedback = Feedback.query.all()
-    return render_template('feedback.html', feedback = all_feedback)
+    reviews = Feedback.query.all()
+    return render_template('feedback.html', reviews=reviews)
 
 @app.route('/on_feedback', methods=['post'])
 def on_feedback():
-    new_feedback = Feedback(content=request.form['feedback'], authors_id=session['userid'])
+    new_feedback = Feedback(content=request.form['reviews'], authors_id=session['userid'])
     if new_feedback:
         db.session.add(new_feedback)
         db.session.commit()
         return redirect('/feedback')
     else:
         return redirect('/feedback')
+#end feedback routes
 
-#end feedback table
 if __name__ == '__main__':
     app.run(debug=True)

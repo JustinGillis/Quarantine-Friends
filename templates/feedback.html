@@ -1,25 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css') }}">
+  <script src="https://kit.fontawesome.com/ab10a33f6d.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/review.css') }}">
+
+  <title>Reviews</title>
 </head>
 <body>
-    <form action="/on_feedback" method="POST">
-        <div class="form-group">
-            <label for="comments"><h2>Ask Away!</h2></label>
-            <textarea class="form-control" name="feedback" rows="4" cols="30"></textarea>
-        </div>
-      <input type="submit" class="btn btn-success" value="Post">
-    </form>
-    <hr>
-    <div>
-    <h4>{{feedback['content']}} {{feedback['first_name']}}</h4>
-    <h4> Brian Says: This is where the comments will go after posted? for now until we figure out the google places API to add comments to Pins </h4>
-    <h4>Brian Says: need to add scroll bar as well for now, this are all hardcoded messages i wrote myself lol need a comments db</h4>
-   
+  <nav class="navbar navbar-expand-lg navbar-warning bg-warning">
+    <span class="navbar-text">
+        Feedback Page
+      </span>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+        </li>
+        <li class="nav-item">
+            <a href="/dashboard"><button type="button" class="btn btn-success">Dashboard</button></a>
+        </li>
+        <li class="nav-item">
+            <a href="/on_logout"><button type="button" class="btn btn-success">Logout</button></a>
+        </li>
+      </ul>
+      <span class="navbar-text">
+        Quarantine Friends
+      </span>
+    </div>
+  </nav>
+  <div>
+    <form action="on_feedback" method="POST">
+      <div class="form-group">
+          <label for="reviews"><h2>Leave an Anonymous Review here! We'd love to hear from you!</h2></label>
+          <textarea class="form-control" name="reviews" rows="4" cols="30"></textarea>
+      </div>
+    <input type="submit" class="btn btn-success" value="Post">
+  </form>
   </div>
   <hr>
+  
+  <ul class="list-group">
+    <li class="list-group-item"><span>Reviews</span></li>
+    {% for review in reviews %}
+    <li class="list-group-item list-group-item-secondary"><span>Anonymous Review: {{review['content']}}</span></li>
+  </ul>
+  {%endfor%}
+
+
+
+      <!-- boostrap stuff -->
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+      </script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+      </script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+      </script>
 </body>
 </html>
