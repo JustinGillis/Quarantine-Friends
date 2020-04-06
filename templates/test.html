@@ -37,19 +37,22 @@
     </div>
   </nav>
   <div>
-    <form>
+    <form action="/on_comment" method="post">
       <div class="form-group">
-          <label for="comments"><h2>Ask Away!</h2></label>
-          <textarea class="form-control" name="comments" rows="4" cols="30"></textarea>
+          <label for="comment"><h2>Ask Away!</h2></label>
+          <textarea class="form-control" name="comment" rows="4" cols="30">Your comment here...</textarea>
       </div>
     <input type="submit" class="btn btn-success" value="Post">
   </form>
   </div>
   <hr>
-  <div>
-  <h4> Brian Says: This is where the comments will go after posted? for now until we figure out the google places API to add comments to Pins </h4>
-  <h4>Brian Says: need to add scroll bar as well for now, this are all hardcoded messages i wrote myself lol need a comments db</h4>
-</div>
+  <div id="comments" style="overflow: auto; height: 100px">
+    {% for comment in comments %}
+        <h4> {{ comment.author['first_name'] }} Says: {{ comment.content }} </h4>
+    {% endfor %}
+  <!-- <h4> Brian Says: This is where the comments will go after posted? for now until we figure out the google places API to add comments to Pins </h4>
+  <h4>Brian Says: need to add scroll bar as well for now, this are all hardcoded messages i wrote myself lol need a comments db</h4> -->
+  </div>
 <hr>
   <div id="map"></div>
 
