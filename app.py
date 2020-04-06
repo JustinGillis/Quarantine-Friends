@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask import json
 
+
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///quarantine_friends.db'
@@ -18,30 +19,45 @@ app.secret_key = 'secret key'
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 bcrypt = Bcrypt(app)
 
+
+upvote_table = db.Table('upvotes', 
+              db.Column('user_id', db.Integer, db.ForeignKey('user.id', ondelete='cascade'), primary_key=True), 
+              db.Column('item_id', db.Integer, db.ForeignKey('item.id', ondelete='cascade'), primary_key=True))
+
+downvote_table = db.Table('downvotes', 
+              db.Column('user_id', db.Integer, db.ForeignKey('user.id', ondelete='cascade'), primary_key=True), 
+              db.Column('item_id', db.Integer, db.ForeignKey('item.id', ondelete='cascade'), primary_key=True))
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(255))
     last_name = db.Column(db.String(255))
     email = db.Column(db.String(255))
     password = db.Column(db.String(255))
+    items_this_user_upvoted = db.relationship('Item', secondary=upvote_table)
+    items_this_user_downvoted = db.relationship('Item', secondary=downvote_table)
     created_at = db.Column(db.DateTime, server_default=func.now())
     updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
+
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     category = db.Column(db.String(255))
     lat = db.Column(db.String(255))
     lng = db.Column(db.String(255))
     votes = db.Column(db.Integer, default=0)
+    users_who_upvoted_this_item = db.relationship('User', secondary=upvote_table)
+    users_who_downvoted_this_item = db.relationship('User', secondary=downvote_table)
     created_at = db.Column(db.DateTime, server_default=func.now())
     updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
+
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(255))
     author_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="cascade"), nullable=False)
     author = db.relationship('User', foreign_keys=[author_id], backref="user_comments")
-    item_id = db.Column(db.Integer, db.ForeignKey("item.id", ondelete="cascade"), nullable=False)
     created_at = db.Column(db.DateTime, server_default=func.now())
     updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
+
 
 @app.route('/')
 def index():
@@ -111,37 +127,54 @@ def edit():
 
 
 # start of routes under construction
-
 @app.route('/on_upvote/<id>')
 def on_upvote(id):
-    item = Item.query.filter_by(id=id).first()
+    item = Item.query.get(id)
+    user = User.query.get(session['userid'])
+
+    if item in user.items_this_user_downvoted:
+        user.items_this_user_downvoted.remove(item)
+        db.session.commit()
+        print('user removed from downvote list')
+
+    user.items_this_user_upvoted.append(item)
+    db.session.commit()
+    print('user added to upvote list')
+
     item.votes +=1
     db.session.commit()
-    print('upvote complete')
+    print('votes increased by 1')
+
+    print('upvote process complete')
     return redirect('/test')
 
 @app.route('/on_downvote/<id>')
 def on_unlike(id):
-    item = Item.query.filter_by(id=id).first()
+    item = Item.query.get(id)
+    user = User.query.get(session['userid'])
+
+    if item in user.items_this_user_upvoted:
+        user.items_this_user_upvoted.remove(item)
+        db.session.commit()
+        print('user removed from upvote list')
+
+    user.items_this_user_downvoted.append(item)
+    db.session.commit()
+    print('user added to downvote list')
+
     item.votes -=1
     db.session.commit()
-    print('downvote complete')
+    print('votes reduced by 1')
+
+    print('downvote process complete')
     return redirect('/test')
 
-@app.route('/on_comment/<id>', methods=['POST'])
-def on_comment(id):
-    comment = Comment(content=request.form['content'], author_id=session['userid'], project_id=id)
+@app.route('/on_comment', methods=['POST'])
+def on_comment():
+    comment = Comment(content=request.form['comment'], author_id=session['userid'])
     db.session.add(comment)
     db.session.commit()
-    return redirect('/view_project/' + id)
-
-@app.route('/on_delete_comment/<project>/<id>')
-def on_delete_comment(project, id):
-    existing_user = User.query.get(session['userid'])
-    comment = Comment.query.get(id)
-    existing_user.user_comments.remove(comment)
-    db.session.commit()
-    return redirect('/view_project/' + project)
+    return redirect('/test')
 
 # end of routes under construction
 
@@ -156,25 +189,53 @@ def logout():
 
 @app.route('/test')
 def test():
+    # checks if user is logged in
+    if 'userid' not in session:
+        return redirect('/')
+
+    user = User.query.get(session['userid'])
     items = Item.query.all()
+
     markers = []
+    
     if items:
-        markers = []
+
+        # get logged in user info
         for item in items:
+
+            # doesn't add item if less than 0 votes
             if item.votes >= 0:
                 temp = {}
+
+                # set coords of item
                 coords = {
                     'lat' : float(item.lat),
                     'lng' : float(item.lng)
                 }
+
+                # checks category and sets correct iconImage
+                if item.category == 'toiletPaper':
+                    iconImage = 'https://i.ibb.co/Zx24VKX/toilet-Paper.png'
+
+                # sets correct voting links
+                if user in item.users_who_upvoted_this_item:
+                    content = '<p class="text-danger" >Votes: %s</p> <a href="on_downvote/%s">Downvote</a>' % (item.votes, item.id)
+                elif user in item.users_who_downvoted_this_item:
+                    content = '<p class="text-danger" >Votes: %s</p> <a href="on_upvote/%s">Upvote</a> ' % (item.votes, item.id)
+                else:
+                    content = '<p class="text-danger" >Votes: %s</p> <a href="on_upvote/%s">Upvote</a> <a href="on_downvote/%s">Downvote</a>' % (item.votes, item.id, item.id)
+                
+                # updates object to marker list
                 temp.update({
                     'coords' : coords,
-                    'iconImage' : 'https://i.ibb.co/Zx24VKX/toilet-Paper.png',
-                    'content' : '<p>Votes: %s</p><a href="on_upvote/%s">Upvote</a> <a href="on_downvote/%s">Downvote</a>' % (item.votes, item.id, item.id)
+                    'iconImage' : iconImage,
+                    'content' : content
                 })
                 markers.append(temp)
-    print('markers:', markers)
-    return render_template('test.html', markers=markers)
+    
+    comments = Comment.query.all()
+
+    return render_template('test.html', markers=markers, comments=comments)
 
 @app.route('/on_test', methods=['POST'])
 def ontest():
