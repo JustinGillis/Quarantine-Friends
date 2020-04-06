@@ -57,6 +57,13 @@ class Comment(db.Model):
     author = db.relationship('User', foreign_keys=[author_id], backref="user_comments")
     created_at = db.Column(db.DateTime, server_default=func.now())
     updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
+class Feedback(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(255))
+    authors_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="cascade"), nullable=False)
+    authors = db.relationship('User', foreign_keys=[authors_id], backref="user_feedback")
+    created_at = db.Column(db.DateTime, server_default=func.now())
+    updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
 
 
 @app.route('/')
@@ -107,21 +114,29 @@ def on_login():
 
 @app.route('/dashboard') #had to add a 'dashboard route' after login/signup because there was no way to come back to main page after you left main page after login.- Brian
 def dashboard(): 
-    results = User.query.all()
+    results = User.query.filter_by(id=session['userid']).all()
     return render_template('home.html', user=results[0])
 
-@app.route('/map')
-def map():
-    return render_template('map.html')
 
-@app.route('/edit') #added 'Edit' path, but needs '<user_id>' not sure how to add that with sqlite - Brian
+
+@app.route('/edit')
 def edit():
-    return render_template('edit.html')
+    results = User.query.get(session['userid'])
+    return render_template('edit.html', user = results)
 
-#@app.route('on_edit', methods=['post']) - Brian
-# def on_edit():
-# needs sqlite for 'INSERT INTO'
-#     return redirect("/dashboard")
+@app.route('/on_edit', methods=['post'])
+def on_edit():
+    user_update = User.query.get(session['userid'])
+    if user_update:
+        user_update.first_name = request.form['first_name']
+        user_update.last_name = request.form['last_name']
+        user_update.email = request.form['email']
+        user_update.password = bcrypt.generate_password_hash(request.form['password'])
+        db.session.commit()
+        return redirect('/dashboard')
+    else:
+        return redirect('/edit')
+
 
 
 
@@ -245,5 +260,27 @@ def ontest():
     db.session.commit()
     return redirect('/test')
 
+
+
+
+
+
+# Feedback table under contruction
+@app.route('/feedback')
+def feedback_page():
+    all_feedback = Feedback.query.all()
+    return render_template('feedback.html', feedback = all_feedback)
+
+@app.route('/on_feedback', methods=['post'])
+def on_feedback():
+    new_feedback = Feedback(content=request.form['feedback'], authors_id=session['userid'])
+    if new_feedback:
+        db.session.add(new_feedback)
+        db.session.commit()
+        return redirect('/feedback')
+    else:
+        return redirect('/feedback')
+
+#end feedback table
 if __name__ == '__main__':
     app.run(debug=True)
