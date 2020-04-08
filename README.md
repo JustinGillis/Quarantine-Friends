@@ -26,8 +26,8 @@
 * [x] login and registration
 
 ## TODO for 3/30 - 4/1
-* [ ] edit user page
-* [ ] add additional dbs
-* [ ] more routes 
-* [ ] finish most front-end
+* [x] edit user page
+* [x] add additional dbs
+* [x] more routes 
+* [x] finish most front-end
 * [ ] Edit validations
