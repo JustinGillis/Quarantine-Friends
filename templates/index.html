@@ -5,11 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css') }}">
     <script src="https://kit.fontawesome.com/ab10a33f6d.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <title>Quarantine Friends</title>
+
+    <script>
+        $(document).ready(function() {
+            // sign up form validations
+            $('#signup_form').submit(function(event) {
+                event.preventDefault();
+                var first_name = $("#first_name");
+                var last_name = $("#last_name");
+                var email = $("#email");
+                var password = $("#password");
+                var confirm_password = $("#confirm_password");
+                var signup_errors = $('#signup_errors');
+                var error_messages = [];
+
+                if (first_name.val().length < 3) {
+                    error_messages.push('<p class="text-danger">First name must be at least 3 characters</p>');
+                };
+
+                if (last_name.val().length < 3) {
+                    error_messages.push('<p class="text-danger">Last name must be at least 3 characters</p>');
+                };
+
+                if (password.val().length < 6) {
+                    error_messages.push('<p class="text-danger">Password must be at least 6 characters</p>');
+                };
+
+                if (confirm_password.val() != password.val()) {
+                    error_messages.push('<p class="text-danger">Passwords do not match</p>');
+                };
+
+                if (error_messages) {
+                    $(signup_errors).html(error_messages);
+                };
+                
+                if (error_messages.length === 0) {
+                    $('#signup_form')[0].submit();
+                };
+
+            });
+        });
+    </script>
+
 </head>
 <body>
+
+    
     
 
 <!-- nav bar -->
@@ -21,37 +65,20 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 {% if 'userid' not in session %}
-        <!-- sign up dropdown -->
+                <!-- sign up dropdown -->
                 <div class="dropdown show mr-3">
                     <a class="btn btn-success dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-user-plus"></i> Sign Up
                     </a>
-                    <form action="/on_signup" method="post" style="width: 300px;" class="needs-validation dropdown-menu p-4" novalidate>
+                    <form id="signup_form" action="/on_signup" method="post" style="width: 300px;" class="dropdown-menu p-4">
 
-                    <!-- Flash messages -->
-                    {% with signup = get_flashed_messages(category_filter=["signup"]) %}
-                    {% if signup %}
-                    <div class="alert-message block-message error">
-                    <ul>
-                        {%- for msg in signup %}
-                        <li>{{ msg }}</li>
-                        {% endfor -%}
-                    </ul>
-                    </div>
-                    {% endif %}
-                    {% endwith %}
+                        <div id="signup_errors"></div>
 
                         <div class="form-group">
-                            <label for="validationCustom01">First Name</label>
-                            <input type="text" class="form-control" name="first_name" id="validationCustom01"
-                                placeholder="First Name" required>
-                            <div class="valid-feedback">
-                                Looks good!
-                            </div>
-                            <div class="invalid-feedback">
-                                You must enter your first name
-                            </div>
+                            <label for="first_name">First Name</label>
+                            <input id="first_name" type="text" class="form-control" name="first_name" id="first_name"
+                                placeholder="First Name">
                         </div>
                         <div class="form-group">
                             <label for="last_name">Last Name</label>
@@ -85,16 +112,17 @@
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-sign-in-alt"></i> Sign In
                     </a>
+                    <div id="signin_errors"></div>
                     <form action="/on_login" method="post" style="width: 300px;" class="needs-validation dropdown-menu p-4">
                         <div class="form-group">
                             <label for="">Email</label>
                             <input type="email" class="form-control" name="email" id="email"
-                                placeholder="Email">
+                                placeholder="Email" required>
                         </div>
                         <div class="form-group">
                             <label for="password">Password</label>
                             <input type="password" class="form-control" name="password" id="password"
-                                placeholder="Password">
+                                placeholder="Password" required>
                         </div>
                         <button type="submit" class="btn btn-success">Sign In</button>
                     </form>
@@ -103,29 +131,16 @@
                 <a class="btn btn-success" role="button" href="/on_logout">Log Out</a>
                 {% endif %}
             </div>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                <h4 class="ml-3 text-danger">{{ message }}</h4> 
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
         </div>
+        
     </nav>
-
-    <script>
-        // Example starter JavaScript for disabling form submissions if there are invalid fields
-        (function () {
-            'use strict';
-            window.addEventListener('load', function () {
-                // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                var forms = document.getElementsByClassName('needs-validation');
-                // Loop over them and prevent submission
-                var validation = Array.prototype.filter.call(forms, function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (form.checkValidity() === false) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-                        form.classList.add('was-validated');
-                    }, false);
-                });
-            }, false);
-        })();
-    </script>
 
     <div class="jumbotron jumbotron-fluid">
         <div class="container">

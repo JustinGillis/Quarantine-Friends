@@ -75,21 +75,22 @@ def on_register():
     is_valid = True
 
     # validations
-    if len(request.form['first_name']) < 3:
-        is_valid = False
-        flash('First name is too short', 'signup')
-    if len(request.form['last_name']) < 3:
-        is_valid = False
-        flash('Last name is too short', 'signup')
-    if not EMAIL_REGEX.match(request.form['email']):
-        is_valid = False
-        flash("Invalid email address", 'signup')
-    if len(request.form['password']) < 6:
-        is_valid = False
-        flash('Password must be at least 6 characters', 'signup')
-    if request.form['password'] != request.form['confirm_password']:
-        is_valid = False
-        flash('Passwords do not match', 'signup')
+    # add check for existing user
+    # if len(request.form['first_name']) < 3:
+    #     is_valid = False
+    #     flash('First name is too short', 'signup')
+    # if len(request.form['last_name']) < 3:
+    #     is_valid = False
+    #     flash('Last name is too short', 'signup')
+    # if not EMAIL_REGEX.match(request.form['email']):
+    #     is_valid = False
+    #     flash("Invalid email address", 'signup')
+    # if len(request.form['password']) < 6:
+    #     is_valid = False
+    #     flash('Password must be at least 6 characters', 'signup')
+    # if request.form['password'] != request.form['confirm_password']:
+    #     is_valid = False
+    #     flash('Passwords do not match', 'signup')
 
     if is_valid:
         pw_hash = bcrypt.generate_password_hash(request.form['password'])
@@ -104,9 +105,10 @@ def on_register():
 
 @app.route('/on_login', methods=['post'])
 def on_login():
+    
     user = User.query.filter_by(email=request.form['email']).first()
     if user == None:
-        flash('Could not log in', 'login')
+        flash('Could not log in')
         return redirect('/')
     elif bcrypt.check_password_hash(user.password, request.form['password']):
         session['userid'] = user.id
@@ -234,11 +236,11 @@ def test():
 
                 # sets correct voting links
                 if user in item.users_who_upvoted_this_item:
-                    content = '<p class="text-danger" >Votes: %s</p> <a href="on_downvote/%s">Downvote</a>' % (item.votes, item.id)
+                    content = '<p class="text-danger" >Votes: %s</p> <a href="on_downvote/%s"><i class="far fa-thumbs-down"></i></a>' % (item.votes, item.id)
                 elif user in item.users_who_downvoted_this_item:
-                    content = '<p class="text-danger" >Votes: %s</p> <a href="on_upvote/%s">Upvote</a> ' % (item.votes, item.id)
+                    content = '<p class="text-danger" >Votes: %s</p> <a href="on_upvote/%s"><i class="far fa-thumbs-up"></i></a> ' % (item.votes, item.id)
                 else:
-                    content = '<p class="text-danger" >Votes: %s</p> <a href="on_upvote/%s">Upvote</a> <a href="on_downvote/%s">Downvote</a>' % (item.votes, item.id, item.id)
+                    content = '<p class="text-danger" >Votes: %s</p> <a href="on_upvote/%s"><i class="far fa-thumbs-up"></i></a> <a href="on_downvote/%s"><i class="far fa-thumbs-down"></i></a>' % (item.votes, item.id, item.id)
                 
                 # updates object to marker list
                 temp.update({

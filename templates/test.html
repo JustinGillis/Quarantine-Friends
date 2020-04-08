@@ -48,7 +48,8 @@
   <hr>
   <div id="comments" style="overflow: auto; height: 100px">
     {% for comment in comments %}
-        <h4> {{ comment.author['first_name'] }} Says: {{ comment.content }} </h4>
+        <h4> {{ comment.author['first_name'] }} {{ comment.author['last_name'] }} Says: {{ comment.content }} </h4>
+        <small>Posted at: {{ comment.created_at }}</small>
     {% endfor %}
   <!-- <h4> Brian Says: This is where the comments will go after posted? for now until we figure out the google places API to add comments to Pins </h4>
   <h4>Brian Says: need to add scroll bar as well for now, this are all hardcoded messages i wrote myself lol need a comments db</h4> -->
