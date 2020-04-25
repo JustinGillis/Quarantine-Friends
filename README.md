@@ -1,4 +1,5 @@
 # Quarantine Friends
+![Quarantine Friends Map](https://i.ibb.co/xHyXd0S/display.png)
 ---
 ## MVP
 
