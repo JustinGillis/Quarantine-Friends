@@ -1,18 +1,18 @@
 # Quarantine Friends
+### An easy to use web application for users to locate essential household items during quarantine
 ![Quarantine Friends Map](https://i.ibb.co/xHyXd0S/display.png)
 ---
 ## MVP
 
-* [ ] User register and login
-* [ ] Google maps api with custom pins
-* [ ] Add/Remove pin once tp is available/gone
-* [ ] Able to upvote/downvote a pin and leave comments
-* [ ] Find users location
+* [x] User register and login
+* [x] Google maps api with custom pins
+* [x] Add/Remove pin once tp is available/gone
+* [x] Able to upvote/downvote a pin and leave comments
+* [x] Find users location
 
 ## Backlog
 * [ ] add other products
 * [ ] New icons depending on how much product is available
-* [ ] Modularize
 
 ## Deligated task
 * [x] Front-End - Brian/Tomas 
@@ -31,4 +31,4 @@
 * [x] add additional dbs
 * [x] more routes 
 * [x] finish most front-end
-* [ ] Edit validations
+* [x] Edit validations
