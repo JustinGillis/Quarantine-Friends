@@ -1,4 +1,6 @@
 # Quarantine Friends
+### Launched with aws - ec2-3-22-101-64.us-east-2.compute.amazonaws.com
+
 ### An easy to use web application for users to locate essential household items during quarantine
 ![Quarantine Friends Map](https://i.ibb.co/xHyXd0S/display.png)
 ---
