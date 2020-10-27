@@ -5,7 +5,7 @@ bcrypt==3.1.7
 cffi==1.13.2
 Click==7.0
 colorama==0.4.3
-cryptography==2.8
+cryptography==3.2
 Flask==1.1.1
 Flask-Bcrypt==0.7.1
 Flask-Migrate==2.5.3
